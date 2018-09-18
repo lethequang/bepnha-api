@@ -31,6 +31,62 @@ class DocumentController extends Controller
 			->where('documents.disable', '=', '0')->orderby('documents.date_created', 'desc')->distinct();
 		return $query;
 	}
+
+	public function getDocuments(Request $request) {
+		$limit = $request->input('limit', 10);
+		$page = $request->input('page', 1);
+		$uid = $request->input('uid');
+		$result = array();
+		try {
+			$query = $this->getQuery($uid);
+			$query->skip($limit * ($page-1))->take($limit);
+			if($page == 1)
+				$query->take($limit);
+			else
+				$query->skip($limit * ($page-1))->take($limit);
+
+			$data = $query->get();
+			foreach ($data as $item){
+				$item->days = Carbon::createFromTimeStamp(strtotime($item->days))->diffForHumans();
+				$notebook = DB::table('notebook')->where('video_id',$item->id)->get();
+				if(isset($notebook) && count($notebook)>0){
+					foreach ($notebook as $value){
+						if( $value->user_id == $uid){
+							$item->liked = 1;
+							break;
+						}else{
+							$item->liked = 0;
+						}
+					}
+				}else{
+					$item->liked = 0;
+				}
+			}
+			$result['data'] = $data;
+			$result['status'] = 200;
+		} catch(QueryException $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		} catch(Exception $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		}
+		return $result;
+	}
+
+	public function incViewCount($id) {
+		$result = array();
+		try {
+			$this::$model->where('id', $id)->increment('view_count');
+			$result['status'] = 200;
+		}
+		catch(QueryException $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		}
+		return $result;
+	}
+
 	public function Search(Request $request){
 		$key = $request->input('key');
 		$uid = $request->input('uid');
@@ -76,32 +132,4 @@ class DocumentController extends Controller
 		}
 		return $result;
 	}
-	/*public function Search2(Request $request){
-		$key = $request->input('key');
-		$limit = $request->input('limit', 10);
-		$page = $request->input('page', 1);
-		$result = array('status'=>'');
-		try{
-			if ($key !== null){
-				$query = DB::table('documents')->where('title','like',"%$key%")
-					->orWhere('content','like',"%$key%")
-					->orderby('date_created','desc');
-				if($page == 1)
-					$query->take($limit);
-				else
-					$query->skip($limit * ($page-1))->take($limit);
-				$data = $query->get();
-				$result['data'] = $data;
-				$result['status'] = 200;
-			}
-			else{
-				$result['status'] = 404;
-			}
-		}
-		catch (\Exception $e){
-			$result['status'] = $e->getCode();
-			$result['errMsg'] = $e->getMessage();
-		}
-		return $result;
-	}*/
 }

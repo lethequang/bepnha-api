@@ -24,26 +24,29 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/home/videos', 'bepnha\HomeController@getHomeVideos');
         Route::get('/home/{tag_id}', 'bepnha\HomeController@getVideos');
 
-        Route::get('/video', 'bepnha\VideoController@getVideos');
+		Route::get('/home2/documents', 'bepnha\HomeController@getHomeDocuments');
+
+		Route::get('/video', 'bepnha\VideoController@getVideos');
         Route::get('/video/search', 'bepnha\VideoController@Search');
         Route::get('/video/getid/{vid}', 'bepnha\VideoController@getVideo');
         Route::get('/video/vinc/{id}', 'bepnha\VideoController@incViewCount');
-		Route::get('/video/search2', 'bepnha\VideoController@Search2');
 
-
+		Route::get('document', 'bepnha\DocumentController@getDocuments');
+		Route::get('document/search', 'bepnha\DocumentController@Search');
+		Route::get('/document/vinc/{id}', 'bepnha\DocumentController@incViewCount');
 
 		Route::get('/bachkhoa/maincats', 'bepnha\BachKhoaController@maincats');
         Route::get('/bachkhoa/listcats/{main_cat}', 'bepnha\BachKhoaController@listcats');
         Route::get('/bachkhoa/videos/{main}/{subcat}', 'bepnha\BachKhoaController@getVideos');
         Route::get('/bachkhoa/search/{main}/{subcat}', 'bepnha\BachKhoaController@search');
+		Route::get('/bachkhoa/document/search/{main}/{subcat}', 'bepnha\BachKhoaController@searchDocument');
 
-        Route::get('/note/add/{user_id}/{video_id}', 'bepnha\NotebookController@addNote');
+		Route::get('/note/add/{user_id}/{video_id}', 'bepnha\NotebookController@addNote');
         Route::get('/note/remove/{user_id}/{video_id}', 'bepnha\NotebookController@rmNote');
         Route::get('/note/check/{user_id}/{video_id}', 'bepnha\NotebookController@rmNote');
         Route::get('/note/kinds/{user_id}', 'bepnha\NotebookController@getkinds');
         Route::get('/note/videos/{user_id}', 'bepnha\NotebookController@getVideos');
 
-        Route::get('document/search', 'bepnha\DocumentController@Search');
         Route::get('search', 'bepnha\HomeController@Search');
     });
 });

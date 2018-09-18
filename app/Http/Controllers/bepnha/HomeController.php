@@ -4,6 +4,7 @@ namespace App\Http\Controllers\bepnha;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\Videos;
+use App\Http\Models\Documents;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use DB;
@@ -231,6 +232,43 @@ class HomeController extends Controller
 	}
 
 
+	public function getHomeDocuments(Request $request)
+	{
+		$result = ['status' => ''];
+		$limit = $request->input('limit', 10);
+		$uid = $request->input('uid');
+		$image = DB::raw('concat("' . env('MEDIA_URL_IMAGE') . '/",image_location) as image');
+		$days = DB::raw("date_created as days");
+		try {
+
+			$documents = DB::table('documents')->where('is_home','=','1')->select('documents.id', 'title', $image, 'documents.content', 'documents.chef','time_to_done','level', $days, 'view_count', 'is_home')
+				->orderby('date_created', 'desc')->take($limit)->get();
+
+			Carbon::setLocale('vi');
+			foreach ($documents as $item) {
+				$item->days = Carbon::createFromTimeStamp(strtotime($item->days))->diffForHumans();
+				$notebook = DB::table('notebook_document')->where('document_id', $item->id)->get();
+				if (isset($notebook) && count($notebook) > 0) {
+					foreach ($notebook as $value) {
+						if ($value->user_id == $uid) {
+							$item->liked = 1;
+							break;
+						} else {
+							$item->liked = 0;
+						}
+					}
+				} else {
+					$item->liked = 0;
+				}
+			}
+			$result['data'] = $documents;
+		} catch (QueryException $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		}
+		return $result;
+	}
+
 	public function Search(Request $request)
 	{
 		$key = $request->input('key');
@@ -280,6 +318,7 @@ class HomeController extends Controller
 
 		$querySql = $query->toSql();
 		$query = DB::table(DB::raw("( $querySql ) as aaaa order by style, date_created desc"))->mergeBindings($query);
+		//dd($query->toSql());
 		try {
 			if ($key !== NULL) {
 				if ($page == 1) {

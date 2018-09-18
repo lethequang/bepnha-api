@@ -131,6 +131,46 @@ class BachKhoaController extends Controller
         return $result;
     }
 
+	public function searchDocument(Request $request, $main, $subcat) {
+		$key = $request->input('key');
+		$limit = $request->input('limit', 10);
+		$page = $request->input('page', 1);
+		$uid = $request->input('uid');
+		$result = array('status'=>'');
+
+
+		if($key !== null) {
+			$query = $this->getQueryDocument($uid)
+				->where('pcategory_id', $main)
+				->where('category_id', $subcat)
+				->where('title','like', '%'.$key.'%');
+			if($page == 1)
+				$query->take($limit);
+			else
+				$query->skip($limit * ($page-1))->take($limit);
+			$data = $query->get();
+			foreach ($data as $item){
+				$item->days = Carbon::createFromTimeStamp(strtotime($item->days))->diffForHumans();
+				$notebook = DB::table('notebook_document')->where('document_id',$item->id)->get();
+				if(isset($notebook) && count($notebook)>0){
+					foreach ($notebook as $value){
+						if( $value->user_id == $uid){
+							$item->liked = 1;
+							break;
+						}else{
+							$item->liked = 0;
+						}
+					}
+				}else{
+					$item->liked = 0;
+				}
+			}
+			$result['data'] = $data;
+			$result['status'] = 200;
+		}
+		return $result;
+	}
+
     private function getQuery($uid) {
         $days = DB::raw("videos.date_created as days");
         $image = DB::raw('concat("'.env('MEDIA_URL_IMAGE').'/",videos.image_location) as image');
@@ -145,4 +185,17 @@ class BachKhoaController extends Controller
             ->leftJoin('notebook', 'videos.id', '=', 'notebook.video_id', 'and', 'notebook.user_id', '=', $uid)->distinct();
         return $query;
     }
+	private function getQueryDocument($uid) {
+		$days = DB::raw("documents.date_created as days");
+		$image = DB::raw('concat("'.env('MEDIA_URL_IMAGE').'/",documents.image_location) as image');
+		$liked = DB::raw('notebook_document.document_id IS NOT NULL as liked');
+		$query = DB::table('documents')
+			->Join('categories','documents.category_id','=','categories.id')
+			->leftJoin('notebook_document', 'documents.id', '=', 'notebook_document.document_id', 'and', 'notebook_document.user_id', '=', $uid)
+			->select('documents.id', 'documents.title', $image, 'documents.content', 'documents.chef', 'documents.time_to_done', 'documents.level',
+				$days, 'documents.view_count', $liked,'categories.name as category','categories.style')
+			->where('documents.disable', '=', '0')->orderby('documents.date_created', 'desc')->distinct();
+
+		return $query;
+	}
 }
