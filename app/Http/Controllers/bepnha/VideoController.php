@@ -24,11 +24,12 @@ class VideoController extends Controller
         $video = DB::raw('concat("'.env('MEDIA_URL_VIDEO').'/",videos.video_location) as video');
         $liked = DB::raw('notebook.video_id IS NOT NULL as liked');
         $query = DB::table('videos')
+			->Join('categories','videos.category_id','=','categories.id')
             ->leftJoin('notebook', 'videos.id', '=', 'notebook.video_id', 'and', 'notebook.user_id', '=', $uid)
             ->select('videos.id', 'videos.name', $image, $video,
                 'videos.description', 'videos.chef', 'videos.ingredients', 'videos.ingredients_2','videos.steps',
                 'videos.duration', 'videos.time_to_done', 'videos.level', 'videos.note',
-                $days, 'videos.video_type_id as kind', 'videos.view_count', $liked)
+                $days, 'videos.video_type_id as kind', 'videos.view_count', $liked, 'categories.name as category','categories.style')
             ->where('videos.disable', '=', '0')->orderby('videos.date_created', 'desc')->distinct();
         return $query;
     }

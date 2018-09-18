@@ -24,9 +24,10 @@ class DocumentController extends Controller
 		$image = DB::raw('concat("'.env('MEDIA_URL_IMAGE').'/",documents.image_location) as image');
 		$liked = DB::raw('notebook_document.document_id IS NOT NULL as liked');
 		$query = DB::table('documents')
+			->Join('categories','documents.category_id','=','categories.id')
 			->leftJoin('notebook_document', 'documents.id', '=', 'notebook_document.document_id', 'and', 'notebook_document.user_id', '=', $uid)
 			->select('documents.id', 'documents.title', $image, 'documents.content', 'documents.chef', 'documents.time_to_done', 'documents.level',
-				$days, 'documents.view_count', $liked)
+				$days, 'documents.view_count', $liked,'categories.name as category','categories.style')
 			->where('documents.disable', '=', '0')->orderby('documents.date_created', 'desc')->distinct();
 		return $query;
 	}
