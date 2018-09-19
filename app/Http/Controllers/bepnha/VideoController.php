@@ -144,31 +144,4 @@ class VideoController extends Controller
         }
         return $result;
     }
-	/*public function Search2(Request $request){
-		$key = $request->input('key');
-		$limit = $request->input('limit', 10);
-		$page = $request->input('page', 1);
-		$result = array('status'=>'');
-		try{
-			if ($key !== null){
-				$query = DB::table('videos')->where('name','like',"%$key%")
-					->orderby('date_created','desc');
-				if($page == 1)
-					$query->take($limit);
-				else
-					$query->skip($limit * ($page-1))->take($limit);
-				$data = $query->get();
-				$result['data'] = $data;
-				$result['status'] = 200;
-			}
-			else{
-				$result['status'] = 404;
-			}
-		}
-		catch (\Exception $e){
-			$result['status'] = $e->getCode();
-			$result['errMsg'] = $e->getMessage();
-		}
-		return $result;
-	}*/
 }

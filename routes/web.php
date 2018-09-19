@@ -22,9 +22,9 @@ Route::group(['prefix' => 'api'], function () {
     Route::group(['prefix' => 'ottbox'], function (){
         Route::get('/home', 'bepnha\HomeController@index');
         Route::get('/home/videos', 'bepnha\HomeController@getHomeVideos');
+		Route::get('/home/documents', 'bepnha\HomeController@getHomeDocuments');
         Route::get('/home/{tag_id}', 'bepnha\HomeController@getVideos');
-
-		Route::get('/home2/documents', 'bepnha\HomeController@getHomeDocuments');
+		Route::get('search', 'bepnha\HomeController@Search');
 
 		Route::get('/video', 'bepnha\VideoController@getVideos');
         Route::get('/video/search', 'bepnha\VideoController@Search');
@@ -39,7 +39,10 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/bachkhoa/listcats/{main_cat}', 'bepnha\BachKhoaController@listcats');
         Route::get('/bachkhoa/videos/{main}/{subcat}', 'bepnha\BachKhoaController@getVideos');
         Route::get('/bachkhoa/search/{main}/{subcat}', 'bepnha\BachKhoaController@search');
-		Route::get('/bachkhoa/document/search/{main}/{subcat}', 'bepnha\BachKhoaController@searchDocument');
+
+		Route::get('/bachkhoa/listcatsdocuments/{main_cat}', 'bepnha\BachKhoaController@listcatsdocuments');
+		Route::get('/bachkhoa/documents/{main}/{subcat}', 'bepnha\BachKhoaController@getDocuments');
+		Route::get('/bachkhoa/documents/search/{main}/{subcat}', 'bepnha\BachKhoaController@searchDocuments');
 
 		Route::get('/note/add/{user_id}/{video_id}', 'bepnha\NotebookController@addNote');
         Route::get('/note/remove/{user_id}/{video_id}', 'bepnha\NotebookController@rmNote');
@@ -47,6 +50,10 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/note/kinds/{user_id}', 'bepnha\NotebookController@getkinds');
         Route::get('/note/videos/{user_id}', 'bepnha\NotebookController@getVideos');
 
-        Route::get('search', 'bepnha\HomeController@Search');
+		Route::get('/notedocument/add/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@addNote');
+		Route::get('/notedocument/remove/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@rmNote');
+		Route::get('/notedocument/documents/{user_id}', 'bepnha\NotebookDocumentController@getVideos');
+		Route::get('/notedocument/check/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@rmNote');
+
     });
 });
