@@ -198,14 +198,14 @@ class HomeController extends Controller
 		$image = DB::raw('concat("' . env('MEDIA_URL_IMAGE') . '/",image_location) as image');
 		$video = DB::raw('concat("' . env('MEDIA_URL_VIDEO') . '/",video_location) as video');
 		$days = DB::raw("videos.date_created as days");
-		$tag = DB::raw('group_concat(tags.title) as tag');
+		$tags = DB::raw('group_concat(tags.title) as tags');
 		try {
 			$videos = Videos::where('is_home', TRUE)
 				->leftJoin('tag_video','videos.id','=','tag_video.video_id')
 				->join('tags','tag_video.tag_id','=','tags.id')
 				->select('videos.id', 'name', $image, $video, 'videos.description', 'videos.chef',
 				'ingredients', 'ingredients_2', 'steps', 'duration', 'time_to_done', 'level',
-					'note', $days, 'video_type_id as kind ', 'view_count', 'is_home',$tag)
+					'note', $days, 'video_type_id as kind ', 'view_count', 'is_home',$tags)
 				->groupby('videos.id')
 				->orderby('videos.date_created', 'desc')->take($limit)->get();
 

@@ -204,9 +204,7 @@ class BachKhoaController extends Controller
 			$query = $this->getQueryDocument($uid)
 				->where('pcategory_id', $main)
 				->where('category_id', $subcat)
-				->where('title','like', '%'.$key.'%')
-			->toSql();
-			dd($query);
+				->where('title','like', '%'.$key.'%');
 			if($page == 1)
 				$query->take($limit);
 			else

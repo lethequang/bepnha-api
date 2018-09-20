@@ -37,7 +37,7 @@ class VideoController extends Controller
         $user_id = $request->input('uid');
         $result = array();
         try {
-            $result['data'] = $this->getQuery($user_id)->find($id);
+            $result['data'] = $this->getQuery($user_id)->where('videos.id','=',$id)->get();
             $result['status'] = 200;
         }
         catch(QueryException $e) {
