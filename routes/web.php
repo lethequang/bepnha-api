@@ -36,6 +36,7 @@ Route::group(['prefix' => 'api'], function () {
 		Route::get('/document/vinc/{id}', 'bepnha\DocumentController@incViewCount');
 
 		Route::get('/bachkhoa/maincats', 'bepnha\BachKhoaController@maincats');
+		Route::get('/bachkhoa/maincatdocument', 'bepnha\BachKhoaController@maincatDocuments');
         Route::get('/bachkhoa/listcats/{main_cat}', 'bepnha\BachKhoaController@listcats');
         Route::get('/bachkhoa/videos/{main}/{subcat}', 'bepnha\BachKhoaController@getVideos');
         Route::get('/bachkhoa/search/{main}/{subcat}', 'bepnha\BachKhoaController@search');
@@ -50,9 +51,11 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/note/kinds/{user_id}', 'bepnha\NotebookController@getkinds');
         Route::get('/note/videos/{user_id}', 'bepnha\NotebookController@getVideos');
 
+        Route::get('/notevd/{user_id}', 'bepnha\NotebookController@getVideosDocuments');
+
 		Route::get('/notedocument/add/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@addNote');
 		Route::get('/notedocument/remove/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@rmNote');
-		Route::get('/notedocument/documents/{user_id}', 'bepnha\NotebookDocumentController@getVideos');
+		Route::get('/notedocument/documents/{user_id}', 'bepnha\NotebookDocumentController@getDocuments');
 		Route::get('/notedocument/check/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@rmNote');
 
     });
