@@ -33,6 +33,7 @@ Route::group(['prefix' => 'api'], function () {
 
 		Route::get('document', 'bepnha\DocumentController@getDocuments');
 		Route::get('document/search', 'bepnha\DocumentController@Search');
+		Route::get('/document/getid/{did}', 'bepnha\DocumentController@getDocument');
 		Route::get('/document/vinc/{id}', 'bepnha\DocumentController@incViewCount');
 
 		Route::get('/bachkhoa/maincats', 'bepnha\BachKhoaController@maincats');

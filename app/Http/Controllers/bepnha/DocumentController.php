@@ -32,6 +32,20 @@ class DocumentController extends Controller
 		return $query;
 	}
 
+	public function getDocument(Request $request, $id) {
+		$user_id = $request->input('uid');
+		$result = array();
+		try {
+			$result['data'] = $this->getQuery($user_id)->where('documents.id','=',$id)->get();
+			$result['status'] = 200;
+		}
+		catch(QueryException $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		}
+		return $result;
+	}
+
 	public function getDocuments(Request $request) {
 		$limit = $request->input('limit', 10);
 		$page = $request->input('page', 1);
