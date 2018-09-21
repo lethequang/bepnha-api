@@ -51,7 +51,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/note/kinds/{user_id}', 'bepnha\NotebookController@getkinds');
         Route::get('/note/videos/{user_id}', 'bepnha\NotebookController@getVideos');
 
-        Route::get('/notevd/{user_id}', 'bepnha\NotebookController@getVideosDocuments');
+        Route::get('/note/videosdocuments/{user_id}', 'bepnha\NotebookController@getVideosDocuments');
 
 		Route::get('/notedocument/add/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@addNote');
 		Route::get('/notedocument/remove/{user_id}/{document_id}', 'bepnha\NotebookDocumentController@rmNote');
