@@ -89,9 +89,14 @@ class VideoController extends Controller
     }
     public function incViewCount($id) {
         $result = array();
+		$mytime = Carbon::now();
         try {
             $this::$model->where('id', $id)->increment('view_count');
-            $result['status'] = 200;
+			$data = DB::table('log_view')->insert(
+				['vd_id' => $id, 'view_time' => $mytime->toDateTimeString(), 'style' => '1' ]
+			);
+			$result['data'] = $data;
+			$result['status'] = 200;
         }
         catch(QueryException $e) {
             $result['status'] = $e->getCode();

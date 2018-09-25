@@ -88,10 +88,28 @@ class DocumentController extends Controller
 		return $result;
 	}
 
-	public function incViewCount($id) {
+	public function incViewCount2($id) {
 		$result = array();
 		try {
 			$this::$model->where('id', $id)->increment('view_count');
+			$result['status'] = 200;
+		}
+		catch(QueryException $e) {
+			$result['status'] = $e->getCode();
+			$result['errMsg'] = $e->getMessage();
+		}
+		return $result;
+	}
+
+	public function incViewCount($id) {
+		$result = array();
+		$view_time = Carbon::now();
+		try {
+			$this::$model->where('id', $id)->increment('view_count');
+			$data = DB::table('log_view')->insert(
+				['vd_id' => $id, 'view_time' => $view_time->toDateTimeString(), 'style' => '2' ]
+			);
+			$result['data'] = $data;
 			$result['status'] = 200;
 		}
 		catch(QueryException $e) {
