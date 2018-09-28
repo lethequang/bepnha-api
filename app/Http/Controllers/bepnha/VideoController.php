@@ -93,7 +93,7 @@ class VideoController extends Controller
         try {
             $this::$model->where('id', $id)->increment('view_count');
 			$data = DB::table('log_view')->insert(
-				['vd_id' => $id, 'view_time' => $mytime->toDateTimeString(), 'style' => '1' ]
+				['vd_id' => $id, 'view_time' => $mytime->toDateString(), 'style' => '1' ]
 			);
 			$result['data'] = $data;
 			$result['status'] = 200;
